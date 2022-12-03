@@ -2,13 +2,11 @@ package main
 
 import (
 	"golang-mygram/app"
-
-	"github.com/gin-gonic/gin"
+	"golang-mygram/router"
 )
 
 func main() {
 	app.StartDB()
-	r := gin.Default()
-
+	r := router.StartApp()
 	r.Run()
 }

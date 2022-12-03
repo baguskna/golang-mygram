@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"golang-mygram/model/domain"
 	"log"
 	"os"
 
@@ -33,6 +34,8 @@ func StartDB() {
 	}
 
 	DB = db
+
+	db.AutoMigrate(&domain.Comment{}, &domain.Photo{}, &domain.SocialMedia{}, &domain.User{})
 	fmt.Println("DB connected!!!")
 }
 
