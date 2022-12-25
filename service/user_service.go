@@ -11,6 +11,7 @@ type UserService interface {
 	FindAll() ([]domain.User, error)
 	FindById(ID int) (domain.User, error)
 	Update(ID int, newUser domain.User) (domain.User, error)
+	Login(user domain.User) (domain.User, error)
 }
 
 type userService struct {
@@ -45,4 +46,8 @@ func (s *userService) Update(ID int, newUser domain.User) (domain.User, error) {
 	newestUser, err := s.userRepository.Update(user)
 
 	return newestUser, err
+}
+
+func (s *userService) Login(user domain.User) (domain.User, error) {
+	return s.userRepository.Login(user)
 }

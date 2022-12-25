@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"golang-mygram/helpers"
 	"golang-mygram/model/domain"
 	"golang-mygram/service"
 	"net/http"
@@ -49,8 +50,14 @@ func (c *userController) PostUser(ctx *gin.Context) {
 		return
 	}
 
+	userResponse := domain.UserResponse{
+		ID: int(user.ID),
+		Username: user.Username,
+		Email: user.Email,
+		Age: user.Age,
+	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data": userResponse,
 	})
 }
 
@@ -113,7 +120,51 @@ func (c *userController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
+	userResponse := domain.UserResponse{
+		ID: int(user.ID),
+		Username: user.Username,
+		Email: user.Email,
+		Age: user.Age,
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data": userResponse,
+	})
+}
+
+func (c *userController) LoginUser(ctx *gin.Context) {
+	contentType := helpers.GetContentType(ctx)
+	user := domain.User{}
+
+	if contentType == "application/json" {
+		ctx.ShouldBindJSON(&user)
+	} else {
+		ctx.ShouldBind(&user)
+	}
+
+	getUser, err := c.userService.Login(user)
+
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unauthorized",
+			"message": "invalid email/password",
+		})
+		return
+	}
+
+	comparePass := helpers.ComparePass([]byte(getUser.Password), []byte(user.Password))
+
+	if !comparePass {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unauthorized",
+			"message": "invalid email/password",
+		})
+		return
+	}
+
+	token := helpers.GenerateToken(uint(getUser.ID), user.Email)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": token,
 	})
 }
