@@ -12,6 +12,7 @@ type UserRepository interface {
 	FindAll() ([]domain.User, error)
 	FindById(ID int) (domain.User, error)
 	Update(user domain.User) (domain.User, error)
+	Login(user domain.User) (domain.User, error)
 }
 
 type userRepository struct {
@@ -47,4 +48,10 @@ func (r *userRepository) FindById(ID int) (domain.User, error) {
 func (r *userRepository) Update(user domain.User) (domain.User, error) {
 	err := r.db.Save(&user).Error
 	return user, err
+}
+
+func (r *userRepository) Login(user domain.User) (domain.User, error) {
+	userRes := domain.User{}
+	err := r.db.First(&userRes, "email = ?", user.Email).Take(&userRes).Error	
+	return userRes, err
 }

@@ -3,6 +3,7 @@ package router
 import (
 	"golang-mygram/app"
 	"golang-mygram/controller"
+	"golang-mygram/middleware"
 	"golang-mygram/repository"
 	"golang-mygram/service"
 
@@ -19,9 +20,15 @@ func StartApp() *gin.Engine {
 
 	r := gin.Default()
 
-	r.POST("/users/register", userController.PostUser)
-	r.DELETE("/users/:id", userController.DeleteUser)
-	r.GET("/users/:id", userController.GetUserById)
+	userRouter := r.Group("/users")
+	{
+		userRouter.POST("/register", userController.PostUser)
+		userRouter.POST("/login", userController.LoginUser)
+		
+		userRouter.Use(middleware.Auth())
+		userRouter.DELETE("/:id", userController.DeleteUser)
+		userRouter.GET("/:id", userController.GetUserById)
+	}
 
 	return r
 }
