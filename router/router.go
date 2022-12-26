@@ -26,6 +26,10 @@ func StartApp() *gin.Engine {
 	commentService := service.NewCommentService(commentRepository)
 	commentController := controller.NewCommentController(commentService)
 
+	socialMediaRepository := repository.NewSocialMediaRepository(db)
+	socialMediaService := service.NewSocialMediaService(socialMediaRepository)
+	socialMediaController := controller.NewSocialMediaController(socialMediaService)
+
 	r := gin.Default()
 
 	userRouter := r.Group("/users")
@@ -58,6 +62,16 @@ func StartApp() *gin.Engine {
 		commentRouter.POST("/", commentController.PostComment)
 		commentRouter.DELETE("/:id", commentController.DeleteComment)
 		commentRouter.PUT("/:id", commentController.UpdateComment)
+	}
+
+	socialMediaRouter := r.Group("/socialmedias")
+	{
+		// socialMediaRouter.Use(middleware.Authentication())
+		socialMediaRouter.GET("/", socialMediaController.GetSocialMedias)
+		socialMediaRouter.GET("/:id", socialMediaController.GetUserById)
+		socialMediaRouter.POST("/", socialMediaController.PostSocialMedia)
+		socialMediaRouter.DELETE("/:id", socialMediaController.DeleteSocialMedia)
+		socialMediaRouter.PUT("/:id", socialMediaController.UpdateSocialMedia)
 	}
 
 	return r
