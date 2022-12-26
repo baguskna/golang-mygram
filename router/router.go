@@ -18,9 +18,13 @@ func StartApp() *gin.Engine {
 	userService := service.NewUserService(userRepository)
 	userController := controller.NewUserController(userService)
 
-	photoRepository := repository.NewPhotoRepostory(db)
+	photoRepository := repository.NewPhotoRepository(db)
 	photoService := service.NewPhotoService(photoRepository)
 	photoController := controller.NewPhotoController(photoService)
+
+	commentRepository := repository.NewCommentRepository(db)
+	commentService := service.NewCommentService(commentRepository)
+	commentController := controller.NewCommentController(commentService)
 
 	r := gin.Default()
 
@@ -44,6 +48,16 @@ func StartApp() *gin.Engine {
 		photoRouter.POST("/", photoController.PostPhoto)
 		photoRouter.DELETE("/:id", photoController.DeletePhoto)
 		photoRouter.PUT("/:id", photoController.UpdatePhoto)
+	}
+
+	commentRouter := r.Group("/comments")
+	{
+		commentRouter.GET("/", commentController.GetComments)
+		photoRouter.Use(middleware.Auth())
+		commentRouter.GET("/:id", commentController.GetCommentBtId)
+		commentRouter.POST("/", commentController.PostComment)
+		commentRouter.DELETE("/:id", commentController.DeleteComment)
+		commentRouter.PUT("/:id", commentController.UpdateComment)
 	}
 
 	return r
