@@ -10,7 +10,7 @@ type UserService interface {
 	Delete(ID int) (domain.User, error)
 	FindAll() ([]domain.User, error)
 	FindById(ID int) (domain.User, error)
-	Update(ID int, newUser domain.User) (domain.User, error)
+	Update(ID int, newUser domain.UserUpdate) (domain.User, error)
 	Login(user domain.User) (domain.User, error)
 }
 
@@ -40,8 +40,12 @@ func (s *userService) FindById(ID int) (domain.User, error) {
 	return s.userRepository.FindById(ID)
 }
 
-func (s *userService) Update(ID int, newUser domain.User) (domain.User, error) {
+func (s *userService) Update(ID int, newUser domain.UserUpdate) (domain.User, error) {
 	user, err := s.userRepository.FindById(ID)
+
+	user.Username = newUser.Username
+	user.Email = newUser.Email
+	user.Age = newUser.Age
 
 	newestUser, err := s.userRepository.Update(user)
 

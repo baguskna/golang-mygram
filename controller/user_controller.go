@@ -51,10 +51,10 @@ func (c *userController) PostUser(ctx *gin.Context) {
 	}
 
 	userResponse := domain.UserResponse{
-		ID: int(user.ID),
+		ID:       user.ID,
 		Username: user.Username,
-		Email: user.Email,
-		Age: user.Age,
+		Email:    user.Email,
+		Age:      user.Age,
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": userResponse,
@@ -62,7 +62,7 @@ func (c *userController) PostUser(ctx *gin.Context) {
 }
 
 func (c *userController) UpdateUser(ctx *gin.Context) {
-	var userReq domain.User
+	var userReq domain.UserUpdate
 
 	err := ctx.ShouldBindJSON(&userReq)
 	if err != nil {
@@ -121,10 +121,10 @@ func (c *userController) GetUserById(ctx *gin.Context) {
 	}
 
 	userResponse := domain.UserResponse{
-		ID: int(user.ID),
+		ID:       user.ID,
 		Username: user.Username,
-		Email: user.Email,
-		Age: user.Age,
+		Email:    user.Email,
+		Age:      user.Age,
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{

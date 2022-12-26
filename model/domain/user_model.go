@@ -2,7 +2,6 @@ package domain
 
 import (
 	"errors"
-	"fmt"
 	"golang-mygram/helpers"
 
 	"github.com/asaskevich/govalidator"
@@ -10,10 +9,17 @@ import (
 )
 
 type UserResponse struct {
-	ID 			 int 		`json:"id"`
+	ID       uint   `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
-	Age      int    `json:"age"`	
+	Age      int    `json:"age"`
+}
+
+type UserUpdate struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Age      int    `json:"age"`
 }
 
 type User struct {
@@ -34,7 +40,6 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 	if u.Age <= 8 {
 		err = errors.New("minimum age is 8 years old")
-		fmt.Println(err)
 		return
 	}
 
