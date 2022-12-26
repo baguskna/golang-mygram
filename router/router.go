@@ -57,7 +57,7 @@ func StartApp() *gin.Engine {
 	commentRouter := r.Group("/comments")
 	{
 		commentRouter.GET("/", commentController.GetComments)
-		photoRouter.Use(middleware.Auth())
+		commentRouter.Use(middleware.Auth())
 		commentRouter.GET("/:id", commentController.GetCommentBtId)
 		commentRouter.POST("/", commentController.PostComment)
 		commentRouter.DELETE("/:id", commentController.DeleteComment)
