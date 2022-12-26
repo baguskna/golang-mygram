@@ -66,7 +66,7 @@ func StartApp() *gin.Engine {
 
 	socialMediaRouter := r.Group("/socialmedias")
 	{
-		// socialMediaRouter.Use(middleware.Authentication())
+		socialMediaRouter.Use(middleware.Auth())
 		socialMediaRouter.GET("/", socialMediaController.GetSocialMedias)
 		socialMediaRouter.GET("/:id", socialMediaController.GetUserById)
 		socialMediaRouter.POST("/", socialMediaController.PostSocialMedia)
