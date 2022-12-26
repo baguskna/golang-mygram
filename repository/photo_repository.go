@@ -18,7 +18,7 @@ type photoRepository struct {
 	db *gorm.DB
 }
 
-func NewPhotoRepostory(db *gorm.DB) *photoRepository {
+func NewPhotoRepository(db *gorm.DB) *photoRepository {
 	return &photoRepository{db}
 }
 

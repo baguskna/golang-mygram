@@ -35,7 +35,7 @@ func StartDB() {
 
 	DB = db
 
-	db.AutoMigrate(&domain.User{}, &domain.Photo{})
+	db.AutoMigrate(&domain.User{}, &domain.Photo{}, &domain.Comment{})
 	fmt.Println("DB connected!!!")
 }
 
