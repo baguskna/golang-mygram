@@ -4,6 +4,7 @@ import (
 	"golang-mygram/helpers"
 	"golang-mygram/model/domain"
 	"golang-mygram/service"
+	"golang-mygram/utils"
 	"net/http"
 	"strconv"
 
@@ -28,7 +29,13 @@ func (c *userController) GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": users})
+	var usersResponse []domain.UserResponse
+	for _, user := range users {
+		userResponse := utils.UserResponseFunc(user)
+		usersResponse = append(usersResponse, userResponse)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"data": usersResponse})
 }
 
 func (c *userController) PostUser(ctx *gin.Context) {
@@ -45,17 +52,12 @@ func (c *userController) PostUser(ctx *gin.Context) {
 	user, err := c.userService.Create(userRequest)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
 
-	userResponse := domain.UserResponse{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Age:      user.Age,
-	}
+	userResponse := utils.UserResponseFunc(user)
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": userResponse,
 	})
@@ -77,6 +79,8 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 
 	user, err := c.userService.Update(id, userReq)
 
+	userResponse := utils.UserResponseFunc(user)
+
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -85,7 +89,7 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data": userResponse,
 	})
 }
 
@@ -93,7 +97,7 @@ func (c *userController) DeleteUser(ctx *gin.Context) {
 	idStr := ctx.Param("id")
 	id, _ := strconv.Atoi(idStr)
 
-	user, err := c.userService.Delete(id)
+	err := c.userService.Delete(id)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -103,7 +107,7 @@ func (c *userController) DeleteUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"message": "Successfully delete the data",
 	})
 }
 
@@ -120,12 +124,7 @@ func (c *userController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
-	userResponse := domain.UserResponse{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Age:      user.Age,
-	}
+	userResponse := utils.UserResponseFunc(user)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": userResponse,

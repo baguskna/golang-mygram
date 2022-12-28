@@ -7,7 +7,7 @@ import (
 
 type UserService interface {
 	Create(user domain.User) (domain.User, error)
-	Delete(ID int) (domain.User, error)
+	Delete(ID int) error
 	FindAll() ([]domain.User, error)
 	FindById(ID int) (domain.User, error)
 	Update(ID int, newUser domain.UserUpdate) (domain.User, error)
@@ -26,10 +26,8 @@ func (s *userService) Create(user domain.User) (domain.User, error) {
 	return s.userRepository.Create(user)
 }
 
-func (s *userService) Delete(ID int) (domain.User, error) {
-	user, err := s.userRepository.FindById(ID)
-	err = s.userRepository.Delete(ID)
-	return user, err
+func (s *userService) Delete(ID int) error {
+	return s.userRepository.Delete(ID)
 }
 
 func (s *userService) FindAll() ([]domain.User, error) {
