@@ -4,7 +4,6 @@ import (
 	"golang-mygram/helpers"
 	"golang-mygram/model/domain"
 	"golang-mygram/service"
-	"golang-mygram/utils"
 	"net/http"
 	"strconv"
 
@@ -29,13 +28,7 @@ func (c *userController) GetUsers(ctx *gin.Context) {
 		return
 	}
 
-	var usersResponse []domain.UserResponse
-	for _, user := range users {
-		userResponse := utils.UserResponseFunc(user)
-		usersResponse = append(usersResponse, userResponse)
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"data": usersResponse})
+	ctx.JSON(http.StatusOK, gin.H{"data": users})
 }
 
 func (c *userController) PostUser(ctx *gin.Context) {
@@ -57,9 +50,8 @@ func (c *userController) PostUser(ctx *gin.Context) {
 		return
 	}
 
-	userResponse := utils.UserResponseFunc(user)
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": userResponse,
+		"data": user,
 	})
 }
 
@@ -79,8 +71,6 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 
 	user, err := c.userService.Update(id, userReq)
 
-	userResponse := utils.UserResponseFunc(user)
-
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -89,7 +79,7 @@ func (c *userController) UpdateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": userResponse,
+		"data": user,
 	})
 }
 
@@ -124,10 +114,8 @@ func (c *userController) GetUserById(ctx *gin.Context) {
 		return
 	}
 
-	userResponse := utils.UserResponseFunc(user)
-
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": userResponse,
+		"data": user,
 	})
 }
 
